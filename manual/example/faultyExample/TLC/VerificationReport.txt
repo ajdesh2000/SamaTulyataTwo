@@ -1,0 +1,53 @@
+
+
+
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 4 
+
+ 
+ get_cpu_time execution time is 0 sec and 1911 microsecs
+ 
+ 
+ 
+ gettimeofday execution time is 0 sec and 129948 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 0 
+
+ 
+ get_cpu_time execution time is 0 sec and 126 microsecs
+ 
+ 
+ 
+ gettimeofday execution time is 0 sec and 8568 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+##################### PATH  EQUIVALANCE #######################
+
+
+
+<<<<<<<<<<<<<<<<< THE TWO MODELS MAY NOT BE EQUIVALENT >>>>>>>>>>>>>>>>>
+
+
+
+
+
+###################### Verification Report ##############################
+
+
+ get_cpu_time execution time is 0 sec and 13655 microsecs
+
+##########################################################################

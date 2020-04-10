@@ -1,0 +1,65 @@
+
+
+
+ 
+ No. of places : 8 
+ 
+ 
+ 
+ No. of transitions : 5 
+ 
+ 
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 0 
+
+ 
+ get_cpu_time execution time is 0 sec and 139 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+ 
+ No. of places : 6 
+ 
+ 
+ 
+ No. of transitions : 4 
+ 
+ 
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 0 
+
+ 
+ get_cpu_time execution time is 0 sec and 136 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+##################### PATH  EQUIVALANCE #######################
+
+
+
+<<<<<<<<<<<<<<<<< THE TWO MODEL ARE EQUIVALENT >>>>>>>>>>>>>>>>>
+
+
+
+
+
+###################### Verification Report ##############################
+
+
+ No. of places in N0: 8 and No. of places in N1: 6
+
+ No. of paths in initial path cover of M0: 0 and No. of paths in actual path cover of M0: 0
+
+ get_cpu_time execution time is 0 sec and 1084 microsecs
+
+##########################################################################

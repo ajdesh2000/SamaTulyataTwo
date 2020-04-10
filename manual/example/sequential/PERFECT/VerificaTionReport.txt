@@ -1,0 +1,100 @@
+%%
+
+
+
+
+
+
+
+
+
+ 
+ No. of places : 19 
+ 
+ 
+ 
+ No. of transitions : 14 
+ 
+ 
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 7 
+
+ 
+ get_cpu_time execution time is 0 sec and 3749 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+
+
+
+
+
+
+Invalid:Invalid:Invalid:Invalid:
+ 
+ No. of places : 14 
+ 
+ 
+ 
+ No. of transitions : 10 
+ 
+ 
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 7 
+
+ 
+ get_cpu_time execution time is 0 sec and 3029 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+##################### PATH  EQUIVALANCE #######################
+
+PATH 1 OF MODEL 1 IS MATCHED WITH PATH 1 OF MODEL 2
+
+
+PATH 2 OF MODEL 1 IS MATCHED WITH PATH 2 OF MODEL 2
+
+
+PATH 3 OF MODEL 1 IS MATCHED WITH PATH 3 OF MODEL 2
+
+
+PATH 4 OF MODEL 1 IS MATCHED WITH PATH 4 OF MODEL 2
+
+
+PATH 5 OF MODEL 1 IS MATCHED WITH PATH 4 OF MODEL 2
+
+
+PATH 6 OF MODEL 1 IS MATCHED WITH PATH 4 OF MODEL 2
+
+
+PATH 7 OF MODEL 1 IS MATCHED WITH PATH 5 OF MODEL 2
+
+
+
+
+<<<<<<<<<<<<<<<<< THE TWO MODEL ARE EQUIVALENT >>>>>>>>>>>>>>>>>
+
+
+
+
+
+###################### Verification Report ##############################
+
+
+ No. of places in N0: 19 and No. of places in N1: 14
+
+ No. of paths in initial path cover of M0: 7 and No. of paths in actual path cover of M0: 7
+
+ get_cpu_time execution time is 0 sec and 13972 microsecs
+
+##########################################################################

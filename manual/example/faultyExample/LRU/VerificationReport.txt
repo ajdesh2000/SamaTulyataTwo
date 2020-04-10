@@ -1,0 +1,113 @@
+
+
+
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 4 
+
+ 
+ get_cpu_time execution time is 0 sec and 1319 microsecs
+ 
+ 
+ 
+ gettimeofday execution time is 0 sec and 89692 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+ *************PATH CONSTRUCTION TIME***************** 
+ 
+ 
+ No. of paths: 17 
+
+ 
+ get_cpu_time execution time is 0 sec and 3151 microsecs
+ 
+ 
+ 
+ gettimeofday execution time is 0 sec and 214268 microsecs
+ 
+ 
+ 
+########################################################################## 
+ 
+
+##################### PATH  EQUIVALANCE #######################
+
+PATH 1 OF MODEL 2 IS MATCHED WITH PATH 1 OF MODEL1
+
+PATH 2 OF MODEL 2 IS MATCHED WITH PATH 2 OF MODEL1
+
+PATH 3 OF MODEL 2 IS MATCHED WITH PATH 3 OF MODEL1
+
+PATH 4 OF MODEL 2 IS MATCHED WITH PATH 4 OF MODEL1
+
+
+
+>>>>Failed to find the corresponding path 5 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 6 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 7 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 8 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 9 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 10 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 11 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 12 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 13 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 14 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 15 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 16 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+>>>>Failed to find the corresponding path 17 of MODEL 2 in MODEL 1>>> 
+ 
+ 
+
+<<<<<<<<<<<<<<<<< THE TWO MODELS MAY NOT BE EQUIVALENT >>>>>>>>>>>>>>>>>
+
+
+
+
+
+###################### Verification Report ##############################
+
+
+ get_cpu_time execution time is 0 sec and 14965 microsecs
+
+##########################################################################
