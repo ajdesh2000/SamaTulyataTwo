@@ -4,6 +4,7 @@
 #include <stdlib.h>
 extern SYMTAB  stab;
 
+
 /* READ PLACES OF PRES+ MODEL*/
 
 PRESPLUS readplace (PRESPLUS model)
@@ -94,8 +95,14 @@ PRESPLUS readtransition(PRESPLUS model)
       char* guardCondition = (char*)malloc(50*sizeof(char)) ;
       printf("\n Enter the guard condition ( if guard conditions are not present type n_g)........: ");
       scanf("%s",guardCondition);
+      if(strcmp(guardCondition,"n_g")==0)
+        strcpy(guardCondition,"1=1");
       model.transitions[idx].guard = ParseExpression(guardCondition);
-      model.transitions[idx].condition=parsecondition(guardCondition,model.transitions[idx].condition);
+      
+      //model.transitions[idx].condition=parsecondition(guardCondition,model.transitions[idx].condition);
+      // becomes
+      model.transitions[idx].condition = EXPRNodetoZ3(&model.ctx, model.transitions[idx].guard);
+
       /*printf ("\n Enter the number of places in preset : ");
       scanf("%d",&(model.transitions[idx].no_of_preset));
 
@@ -233,11 +240,17 @@ PRESPLUS readedge(PRESPLUS model){
       model.edges[edge_index].from_transition=1;
 
       char expression[50];
-      printf("\n Enter the expression associated with edge: ");
-      scanf("%s", expression);
+      printf("\n Enter the expression associated with edge in the format varname=expression: ");
+      scanf(" %s", expression);
+      char* eqp=strchr(expression,'=');
+      *(eqp)='\0';
+      model.edges[edge_index].expr = ParseExpression(eqp+1);
+      //parseassignments(expression, model.edges[edge_index].action);
+      printf("Im looking for variable '%s' and its index is  %d",expression,searchForVariable(model, expression));
+      model.edges[edge_index].action[0].lhs=searchForVariable(model, expression);
+      model.edges[edge_index].action[0].rhs=EXPRNodetoZ3(&model.ctx,model.edges[edge_index].expr);
+	    *(eqp)='=';
       model.edges[edge_index].expr = ParseExpression(expression);
-      parseassignments(expression, model.edges[edge_index].action);
-	
       
       printf("\n Enter transition name: ");
       char tname[4];

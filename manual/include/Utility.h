@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "types.h"
+#include <z3.h>
 
 extern int drivemenu() ;
 extern PRESPLUS readKBDF() ;
@@ -38,5 +39,9 @@ extern EXPR ParseExpression(char*) ;
 extern CUTPOINT findcutpoints(PRESPLUS model, CUTPOINT cp);
 extern PATHSET ConstructAllPaths(PRESPLUS *model);
 extern void visualize(PRESPLUS model);
+
+extern Z3_context mk_context();
+
+extern Z3_ast EXPRNodetoZ3(Z3_context* ctxp,EXPR expr);
 
 #endif 

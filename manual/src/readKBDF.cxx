@@ -4,6 +4,7 @@ PRESPLUS readKBDF()
 {
   
   PRESPLUS model;
+  model.ctx = mk_context();
 
   model = readplace (model); 
   // reads places and the variables associated with them

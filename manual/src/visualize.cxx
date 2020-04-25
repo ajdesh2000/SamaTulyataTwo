@@ -81,9 +81,9 @@ char* retformula(EXPR exp) {
 
 void visualize(PRESPLUS model) {
 	FILE *fp;
- 	char name[100],name1[100];
+ 	char name[100]="vis",name1[100];
  	printf(".....Enter filename to save visual representation.......... :\n");
- 	scanf("%[^\n]s", name);
+ 	scanf(" %[^\n]s", name);
  	strcpy(name1,name);
  	strcat(name,".dot");
 	fp = fopen(name, "w");

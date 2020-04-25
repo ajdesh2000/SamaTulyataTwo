@@ -53,6 +53,8 @@
 	
 void DecompilingExpr(EXPR expr)
 {
+
+
   
   if (expr->left != NULL)
   {
@@ -166,8 +168,9 @@ int printpresplus(PRESPLUS model)
     printf("\n Transition : %s",model.transitions[i].name);
     printf("\n Guard conditions:");
     DecompilingExpr(model.transitions[i].guard);
-    printf("\n Normalized Guard conditions:");
-    write_lists(model.transitions[i].condition);
+    printf("\n Z3 Guard conditions:");
+    printf("%s\n", Z3_ast_to_string(model.ctx,model.transitions[i].condition));
+    //write_lists(model.transitions[i].condition);
     printf("\n Printing preset edge list : ") ;
     for (j=0; j < model.transitions[i].no_of_preset; j++)
     {
@@ -191,13 +194,15 @@ int printpresplus(PRESPLUS model)
       printf("\n Connects Transition %s to Place %s",model.transitions[model.edges[i].transition].name,model.places[model.edges[i].place].name);
       printf("\n Transition function :");
       DecompilingExpr(model.edges[i].expr);
-      printf("\n Normalized Transition function :");
+      printf("\n Z3 Transition function :");
       k=0;
       while(model.edges[i].action[k].rhs!=NULL)
       {
          	symbol_for_index( model.edges[i].action[k].lhs, sym_value );
-		printf("\n%s  :=  ", sym_value );		
-		write_lists(model.edges[i].action[k].rhs);
+
+		printf("\n%s  :=  ", model.var_table[model.edges[i].action[k].lhs].name/*sym_value*/ );
+    printf("%s\n", Z3_ast_to_string(model.ctx,model.edges[i].action[k].rhs));		
+		//write_lists(model.edges[i].action[k].rhs);
 		k++;
       }
 

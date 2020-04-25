@@ -504,7 +504,7 @@ void parseA(char *A,DATA_TRANS *D)
 	    op3[0]='\0';
 	}
       // printf("\n\n      op2=%s  op= %c   op3= %s  \n",op2,op,op3);
-	D->rhs=create_expr(op2,op,op3);
+	//D->rhs=create_expr(op2,op,op3);
 	//printf("rhs  ");
 	//write_lists(D->rhs);        
 }
@@ -967,7 +967,7 @@ PRESPLUS readFile (FILE *fp)
        fscanf(fp,"\n Guard conditions :%s",guardCondition);
        model.transitions[i].guard = ParseExpression(guardCondition);
       //printf("\n Enter the guard condition associated with transition :%s",guardCondition);/* test case*/
-       model.transitions[i].condition=parsecondition(guardCondition,model.transitions[i].condition);
+       //model.transitions[i].condition=parsecondition(guardCondition,model.transitions[i].condition);
       
       fscanf(fp, "\n Printing Preset list(%d) :",&model.transitions[i].no_of_preset);
       //printf("\n Preset list (%d) ",model.transitions[i].no_of_preset);/* test case*/

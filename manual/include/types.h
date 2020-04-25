@@ -16,6 +16,7 @@
 #define QUEUESIZE 2000
 
 #include "normalized.h"
+#include <z3.h>
 typedef char shortInt;
 /*
 typedef enum 
@@ -25,7 +26,7 @@ typedef enum NODETYPE {operator, variable, constant};
 typedef struct Assign
 {
         int lhs;    /* left hand side (lhs) variable's symbol table index is stored here  */
-        NC *rhs;  /* right hand side of the assignment is stored as an expression tree */
+        Z3_ast rhs;  /* right hand side of the assignment is stored as an expression tree */
 }DATA_TRANS;
 
 typedef enum {
@@ -103,10 +104,10 @@ typedef struct transition
   int preset[MAXNOPRESET];  /* indices to place table */
   int postset[MAXNOPOSTSET]; /* indices to place table */
   EXPR guard;
-  EXPR expr;
+  EXPR expr; //delet
   //int vald;
-  NC *condition;
-  DATA_TRANS action[100];
+  Z3_ast condition;
+  DATA_TRANS action[100]; //delet
   int delay, deadline,cmplt;
  } TRANSITION;
 
@@ -114,7 +115,8 @@ typedef struct transition
   char name[4];
   int from_transition; //1 if outgoing from transition,0 if from place
   EXPR expr;
-  DATA_TRANS action[100];
+
+  DATA_TRANS action[100]; 
   int place; //index to place table
   int transition; //index to transition
   int id;
@@ -130,6 +132,7 @@ typedef struct
    TRANSITION transitions[MAXNOTRANS];
    VARIABLE var_table[MAXNOVAR];
    EDGE edges[MAXNOEDGES];
+   Z3_context ctx;
    /** 
     * This array contains the index of the places 
     * which contains variables i.e places which are

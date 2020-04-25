@@ -27,7 +27,7 @@ CUTPOINT findcutpoints(PRESPLUS *model, CUTPOINT cp) {
 	 * uses the naive algorithm, places with 0 presets/0 postsets/more than 1 presets
 	 * marks type as 0 for in-ports, 1 for out-ports, 2 for intermediate cutpoints
 	 */
-printf("\nfindcutpoints() is bigen ...............\n");
+printf("\nfindcutpoints() has begun ...............\n");
 
 	int i=0,j,k, count=0, num=0, flag=0;
 	cp.num_of_cp=0;

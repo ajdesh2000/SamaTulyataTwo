@@ -1,13 +1,17 @@
 CC=gcc
 CFLAGS= -g -c
 INCLUDES=-I ./include/
-LIBS=-ll -ly -lstdc++
+LIBS=-ll -ly -lstdc++ -lz3
 
 pres: ./obj/rpcalc.o ./obj/lex.yy.o ./obj/printmodel.o ./obj/readKBDF.o \
 	  ./obj/drivemenu.o ./obj/readUtility.o ./obj/writepres.o \
 	  ./obj/searchUtility.o ./obj/readFile.o ./obj/findpath.o ./obj/visualize.o \
-	  ./obj/pathequivalence.o ./obj/main.o
+	  ./obj/main.o ./obj/z3wrappers.o
+	  
 	$(CC) -g $(INCLUDES) -o pres ./obj/*.o $(LIBS) 
+
+./obj/z3wrappers.o: ./src/z3wrappers.cxx ./include/types.h ./include/Utility.h
+	$(CC) $(CFLAGS) $(INCLUDES) ./src/z3wrappers.cxx -o ./obj/z3wrappers.o
 
 ./obj/rpcalc.o: ./src/rpcalc.cxx ./include/types.h ./include/rpcalc.hxx
 	$(CC) $(CFLAGS) $(INCLUDES) ./src/rpcalc.cxx -o ./obj/rpcalc.o

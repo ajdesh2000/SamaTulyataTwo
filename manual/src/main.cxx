@@ -7,6 +7,7 @@
 int main(int argc, char** argv) {
   int n,m;
   PRESPLUS model1,model2;
+  //Initialize contexts attached to both models
    PATHSET paths1,paths2;
   if(argc==3) {		
     FILE *fp1 = fopen(argv[1],"r");
@@ -15,7 +16,7 @@ int main(int argc, char** argv) {
 	  fclose(fp1);
     model2 = readFile (fp2);
           fclose(fp2);
-     findEquivalent(model1,model2);
+     //findEquivalent(model1,model2);
     char* s2=argv[2],*s3=(char*)calloc(100,sizeof(char));
     for(n=16;s2[n]!='\0';n++)
       s3[n-16]=s2[n];
@@ -76,7 +77,7 @@ int main(int argc, char** argv) {
       case 6: {
             if(m==1)
             {
-              findEquivalent(model1,model2);
+              //findEquivalent(model1,model2);
             }
            else
               printf("Please read  the second model");

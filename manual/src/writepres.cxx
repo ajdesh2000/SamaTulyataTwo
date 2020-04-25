@@ -186,7 +186,7 @@ int writeFile (PRESPLUS model)
     fprintf(fp,"\n Guard conditions:");
     DecompilingExprfile(fp,model.transitions[i].guard);
     fprintf(fp,"\n Normalized Guard conditions:");
-    write_listsfile(fp,model.transitions[i].condition);
+    //write_listsfile(fp,model.transitions[i].condition);
     fprintf(fp,"\n Printing preset edge list : ") ;
     for (j=0; j < model.transitions[i].no_of_preset; j++)
     {
@@ -216,7 +216,7 @@ int writeFile (PRESPLUS model)
       {
          	symbol_for_index( model.edges[i].action[k].lhs, sym_value );
 		fprintf(fp,"\n%s  :=  ", sym_value );		
-		write_listsfile(fp,model.edges[i].action[k].rhs);
+		//write_listsfile(fp,model.edges[i].action[k].rhs);
 		k++;
       }
 
