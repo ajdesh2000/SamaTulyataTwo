@@ -70,77 +70,6 @@ void DecompilingExprfile(FILE *fp,EXPR expr)
   return ;
 } 	 
 
-void 
-write_listsfile(FILE *fp, NC *root ){
-
-  char *sym_value;
-  sym_value = (char * ) malloc( 1000*sizeof( char ) );
-  
-  if( root != NULL ){
-    if( root->type == 'R' || root->type == 'O' ){
-      if( root->type == 'R' )
-	printf( " ( ");
-      write_lists( root->link );
-    }
-    
-    switch( root->type )
-      {
-      case 'f':
-	symbol_for_index( root->inc, sym_value );
-	fprintf(fp, "* %s( ",sym_value );
-	break;	
-      case 'v': 
-	symbol_for_index( root->inc, sym_value );
-        fprintf(fp, "* %s ",sym_value );
-	break;
-      case 'T':
-	fprintf(fp, "%c %d ",( root->inc >= 0 )?'+':'-', 
-		abs( root->inc ) );
-	break;
-      case 'S':
-	fprintf(fp, " %d ",root->inc );
-	break;
-      case 'R':
-	switch( root->inc )
-	  {
-	  case 0: fprintf(fp, ">= 0");
-	    break;
-	  case 1: fprintf(fp, "> 0" );
-	    break;
-	  case 2: fprintf(fp, "<= 0" );
-	    break;
-	  case 3: fprintf(fp, "< 0" );
-	    break;
-	  case 4: fprintf(fp, "== 0");
-	    break;
-	  case 5: fprintf(fp, "!= 0" );
-	    break;
-	  }; // switch( root->inc )
-	printf( " ) " );
-	if( root->list != NULL )
-	  fprintf(fp, " OR " );
-	break;
-      case 'A':  
-	break;
-      case 'O':
-	if( root->list != NULL )
-	  fprintf(fp, " AND ");
-	break;
-      case 'D':
-	fprintf(fp, " / ");
-	break;
-      default: fprintf(fp, "%c %d\t",  root->type, root->inc );
-      };
-    if( root->type != 'R' && root->type != 'O' )	
-      write_listsfile(fp, root->link );
-    if( root->type == 'f' )
-      fprintf(fp, " )" );
-    if( root->type == 'S' && root->list != NULL )
-      fprintf(fp, ", " );
-    write_listsfile(fp, root->list );
-  }
-  return;
-}	 
 
 
 
@@ -148,7 +77,7 @@ write_listsfile(FILE *fp, NC *root ){
 	 
 int writeFile (PRESPLUS model)
 { 
- FILE *fp;
+ FILE *f;
   char *sym_value;
         sym_value = (char * ) malloc( 100*sizeof( char ) );
  char name[100];
@@ -157,7 +86,7 @@ int writeFile (PRESPLUS model)
  //char prename[200]="./examples/presplus/";
  //strcat(prename,name);
  //fp = fopen(prename,"w");
- fp = fopen(name, "w");
+ f = fopen(name, "w");
  int i,j,k;
  // VARIABLE temp1;
   //ffprintf(fp,"**********Printing PRES+ on file******************** ");
@@ -167,74 +96,93 @@ int writeFile (PRESPLUS model)
 
 
 
-  fprintf(fp,"\n Number of Places = %d", model.no_of_places);  
-  fprintf(fp,"\n Printing Places ... \n");  
-  
+fprintf(f,"\n Number of Places = %d", model.no_of_places);  
+  fprintf(f,"\n Places ... \n");  
   for(i=0;i< model.no_of_places;i++) 
   {
-    fprintf(fp,"\n Place : %s ",model.places[i].name);
-    fprintf(fp,"\n Associated variable : %s",model.var_table[model.places[i].var_index].name);
-    fprintf(fp,"\n Associated token value:%d",model.places[i].token_present);
-    fprintf(fp,"\n\n") ;
+    fprintf(f,"\n Place : %s ",model.places[i].name);
+    fprintf(f,"\n Associated variable : %s",model.var_table[model.places[i].var_index].name);
+    fprintf(f,"\n Associated token value:%d",model.places[i].token_present);
+    fprintf(f,"\n\n") ;
   }
 
-  fprintf(fp,"\n Number of Transitions = %d", model.no_of_transitions);
-  fprintf(fp,"\n Printing Transitions ... \n");
+  fprintf(f,"\n Number of Transitions = %d", model.no_of_transitions);
+  fprintf(f,"\n Transitions ... \n");
   for(i=0;i<model.no_of_transitions;i++)
   {
-    fprintf(fp,"\n Transition : %s",model.transitions[i].name);
-    fprintf(fp,"\n Guard conditions:");
-    DecompilingExprfile(fp,model.transitions[i].guard);
-    fprintf(fp,"\n Normalized Guard conditions:");
-    //write_listsfile(fp,model.transitions[i].condition);
-    fprintf(fp,"\n Printing preset edge list : ") ;
+    fprintf(f,"\n Transition : %s",model.transitions[i].name);
+    fprintf(f,"\n Guard conditions:");
+    DecompilingExprfile(f,model.transitions[i].guard);
+    fprintf(f,"\n Z3 Guard conditions:###");
+    fprintf(f,"%s", Z3_ast_to_string(model.ctx,model.transitions[i].condition));
+    fprintf(f,"###\n Number of preset edges : %d",model.transitions[i].no_of_preset) ;
+    fprintf(f,"\n Preset edge list : ") ;
     for (j=0; j < model.transitions[i].no_of_preset; j++)
     {
-         fprintf(fp,"%s ", model.edges[model.transitions[i].preset[j]].name);
+         fprintf(f,"%s ", model.edges[model.transitions[i].preset[j]].name);
     }
-    printf("\n Printing postset edge list : ") ;
+    fprintf(f,"\n Number of postset edges : %d",model.transitions[i].no_of_postset) ;
+    fprintf(f,"\n Postset edge list : ") ;
     for (j=0 ; j< model.transitions[i].no_of_postset;j++)
     {
-         fprintf(fp,"%s ", model.edges[model.transitions[i].postset[j]].name);
+         fprintf(f,"%s ", model.edges[model.transitions[i].postset[j]].name);
     }
-    fprintf(fp,"\n\n") ;
+    fprintf(f,"\n\n") ;
   } 
   
-  fprintf(fp,"\n Number of Edges : %d",model.no_of_edges) ;
-  fprintf(fp,"\n Printing Edges ... : ") ;
+  fprintf(f,"\n Number of Edges : %d",model.no_of_edges) ;
+  fprintf(f,"\n Edges ... : ") ;
   for(i=0;i<model.no_of_edges;i++)    
   {
-    fprintf(fp,"\n\n Edge : %s ",model.edges[i].name);
+    fprintf(f,"\n\n Edge : %s ",model.edges[i].name);
+    fprintf(f,"\n Type : %d",model.edges[i].from_transition);
     if(model.edges[i].from_transition==1)
     {
-      fprintf(fp,"\n Connects Transition %s to Place %s",model.transitions[model.edges[i].transition].name,model.places[model.edges[i].place].name);
-      fprintf(fp,"\n Transition function :");
-      DecompilingExprfile(fp,model.edges[i].expr);
-      fprintf(fp,"\n Normalized Transition function :");
+      fprintf(f,"\n Connects Transition %s to Place %s",model.transitions[model.edges[i].transition].name,model.places[model.edges[i].place].name);
+      fprintf(f,"\n Transition function :");
+      DecompilingExprfile(f,model.edges[i].expr);
+      fprintf(f,"\n Z3 Transition function :###");
       k=0;
       while(model.edges[i].action[k].rhs!=NULL)
       {
-         	symbol_for_index( model.edges[i].action[k].lhs, sym_value );
-		fprintf(fp,"\n%s  :=  ", sym_value );		
-		//write_listsfile(fp,model.edges[i].action[k].rhs);
-		k++;
+          symbol_for_index( model.edges[i].action[k].lhs, sym_value );
+
+    fprintf(f,"%s  :=  ", model.var_table[model.edges[i].action[k].lhs].name/*sym_value*/ );
+    fprintf(f,"%s", Z3_ast_to_string(model.ctx,model.edges[i].action[k].rhs));    
+    k++;
       }
+      fprintf(f,"###");
 
     }
     else{
-      fprintf(fp,"\n Connects Place %s to Transition %s",model.places[model.edges[i].place].name,model.transitions[model.edges[i].transition].name);
+      fprintf(f,"\n Connects Place %s to Transition %s",model.places[model.edges[i].place].name,model.transitions[model.edges[i].transition].name);
     }
 
   }
 
-  fprintf(fp,"\n\n\n Printing initial marking ... ");
-  fprintf(fp,"\n Total number of initially marked places : %d",model.no_of_places_initially_marked);
-  fprintf(fp,"\n Initially marked places are : ");
+  fprintf(f,"\n\n\n Printing initial marking ... ");
+  fprintf(f,"\n Total number of initially marked places : %d",model.no_of_places_initially_marked);
+  fprintf(f,"\n Initially marked places are : ");
   for(i=0; i< model.no_of_places_initially_marked; i++)
   {
-     fprintf(fp,"%s ",(model.places[model.initial_marking[i]].name));
+     fprintf(f,"%s ",(model.places[model.initial_marking[i]].name));
   }
-  fprintf(fp,"\n\n") ;
-  fclose(fp);
+  fprintf(f,"\n\n") ;
+/*************************************/
+
+  fprintf(f,"\n Preset & postset edge list for places: \n") ;
+  for(i=0;i<model.no_of_places;i++)
+  {
+    fprintf(f," Preset list for place %s:\t",model.places[i].name);
+    for(j=0;j<model.places[i].no_of_preset;j++)
+      fprintf(f,"%s ",model.edges[model.places[i].preset[j]].name);
+    fprintf(f,"\n");
+    fprintf(f," Postset list for place %s:\t",model.places[i].name);
+    for(j=0;j<model.places[i].no_of_postset;j++)
+      fprintf(f,"%s ",model.edges[model.places[i].postset[j]].name);
+    fprintf(f,"\n");
+  }
+  fprintf(f,"\n\n") ;
+  fclose(f);
   return 0;
 }

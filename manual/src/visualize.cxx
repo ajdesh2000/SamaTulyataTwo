@@ -1,5 +1,5 @@
 #include "Utility.h"
-
+#include<string.h>
 char* retformula(EXPR exp) {
 	char* temp;
 	int val;
@@ -99,11 +99,9 @@ void visualize(PRESPLUS model) {
 	}
 	fprintf(fp,"\n");
 	for(i=0;i<model.no_of_transitions;i++) {
-		fprintf(fp, "\tnode%s [color = blue shape = record, label = \"{ %s | expression := ",\
-			model.transitions[i].name, model.transitions[i].name);
-		fprintf(fp, "%s", "-");
+		fprintf(fp, "\tnode%s [color = blue shape = record, label = \"{ %s ",model.transitions[i].name, model.transitions[i].name);
 		if(strcmp("n_g",retformula(model.transitions[i].guard))!=0) {
-			fprintf(fp," | condition := %s",retformula(model.transitions[i].guard));
+			fprintf(fp," | condition := %s",(strcmp(retformula(model.transitions[i].guard),"1=1")==0)?"n_g":retformula(model.transitions[i].guard));
 		}
 		fprintf(fp, " }\"];\n");
 	}

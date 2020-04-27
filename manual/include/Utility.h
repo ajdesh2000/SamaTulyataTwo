@@ -11,7 +11,7 @@ extern int drivemenu() ;
 extern PRESPLUS readKBDF() ;
 extern int printpresplus(PRESPLUS ) ;
 extern int  writeFile (PRESPLUS );
-extern PRESPLUS  readFile (FILE*);
+extern PRESPLUS  readFile ();
 extern PRESPLUS readplace(PRESPLUS ) ;
 extern PRESPLUS readtransition(PRESPLUS ) ;
 extern PRESPLUS readInitialMarking(PRESPLUS ) ;

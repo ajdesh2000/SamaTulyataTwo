@@ -53,9 +53,6 @@ pres: ./obj/rpcalc.o ./obj/lex.yy.o ./obj/printmodel.o ./obj/readKBDF.o \
 ./obj/findpath.o: ./src/findpath.cxx ./include/Utility.h ./include/findpath.h
 	$(CC) $(CFLAGS) $(INCLUDES) ./src/findpath.cxx -o ./obj/findpath.o 
 
-./obj/pathequivalence.o: ./src/pathequivalence.cxx ./include/Utility.h 
-	$(CC) $(CFLAGS) $(INCLUDES) ./src/pathequivalence.cxx -o ./obj/pathequivalence.o 
-
 ./obj/main.o: ./src/main.cxx ./include/Utility.h
 	$(CC) $(CFLAGS) $(INCLUDES) ./src/main.cxx -o ./obj/main.o
 

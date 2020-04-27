@@ -1,4 +1,4 @@
-digraph "hi" {
+digraph "example1vis" {
 	fontname = "Times-Roman"; fontsize = 14;
 	node [ height = 0.25, width = 0.4, shape = box ];
 	edge [ color = red ];
@@ -7,7 +7,7 @@ digraph "hi" {
 	nodep0 [color = chocolate shape = ellipse, label = " p0 : variable := a"];
 	nodep1 [color = chocolate shape = ellipse, label = " p1 : variable := a"];
 
-	nodet0 [color = blue shape = record, label = "{ t0 | expression := - }"];
+	nodet0 [color = blue shape = record, label = "{ t0  | condition := n_g }"];
 	nodee1 [color = green shape = record, label = "{ e1 | expression := a=a+1 }"];
 
 	nodep0 -> nodet0 [label=""];

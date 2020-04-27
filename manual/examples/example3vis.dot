@@ -1,0 +1,35 @@
+digraph "example3vis" {
+	fontname = "Times-Roman"; fontsize = 14;
+	node [ height = 0.25, width = 0.4, shape = box ];
+	edge [ color = red ];
+	nodesep = 0.1; ranksep = 0.5;
+
+	nodep0 [color = chocolate shape = ellipse, label = " p0 : variable := a"];
+	nodep1 [color = chocolate shape = ellipse, label = " p1 : variable := a"];
+	nodep2 [color = chocolate shape = ellipse, label = " p2 : variable := a"];
+	nodep3 [color = chocolate shape = ellipse, label = " p3 : variable := a"];
+
+	nodet0 [color = blue shape = record, label = "{ t0  | condition := n_g }"];
+	nodet1 [color = blue shape = record, label = "{ t1  | condition := n_g }"];
+	nodet2 [color = blue shape = record, label = "{ t2  | condition := n_g }"];
+	nodet3 [color = blue shape = record, label = "{ t3  | condition := n_g }"];
+	nodee1 [color = green shape = record, label = "{ e1 | expression := a=a+1 }"];
+	nodee3 [color = green shape = record, label = "{ e3 | expression := a=a+1 }"];
+	nodee5 [color = green shape = record, label = "{ e5 | expression := a=a+1 }"];
+	nodee7 [color = green shape = record, label = "{ e7 | expression := a=a+1 }"];
+
+	nodep0 -> nodet0 [label=""];
+	nodet0 -> nodee1 [label=""];
+	nodee1 -> nodep1 [label=""];
+	nodep1 -> nodet1 [label=""];
+	nodet1 -> nodee3 [label=""];
+	nodee3 -> nodep2 [label=""];
+	nodep2 -> nodet2 [label=""];
+	nodet2 -> nodee5 [label=""];
+	nodee5 -> nodep1 [label=""];
+	nodep1 -> nodet3 [label=""];
+	nodet3 -> nodee7 [label=""];
+	nodee7 -> nodep3 [label=""];
+	nodestart [color = black shape = ellipse, label = "Initial Mark"];
+	nodestart -> nodep0 [color = black label = " "];
+}

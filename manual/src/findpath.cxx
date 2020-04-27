@@ -8,124 +8,128 @@
 #define RM -999
 //EXPR subexpr[128];
 
+int next_place(PRESPLUS* model, int trans_id, int post_index){
+	if(model->edges[model->transitions[trans_id].postset[post_index]].from_transition==0){
+		printf("edge is from a place, can't find next place.\n");
+		return -1;
+	}
+	return model->edges[model->transitions[trans_id].postset[post_index]].place;
+}
+
+int next_trans(PRESPLUS* model, int place_id, int post_index){
+	if(model->edges[model->places[place_id].postset[post_index]].from_transition==1){
+		printf("edge is from a transition, can't find next transition.\n");
+		return -1;
+	}
+	return model->edges[model->places[place_id].postset[post_index]].transition;
+}
+
+int prev_trans(PRESPLUS* model, int place_id, int pre_index){
+	if(model->edges[model->places[place_id].preset[pre_index]].from_transition==0){
+		printf("edge is from a place, can't find previous transition.\n");
+		return -1;
+	}
+	return model->edges[model->places[place_id].preset[pre_index]].transition;
+
+}
+int prev_place(PRESPLUS* model, int trans_id, int pre_index){
+	if(model->edges[model->transitions[trans_id].preset[pre_index]].from_transition==1){
+		printf("edge is from a transition, can't find previous place.\n");
+		return -1;
+	}
+	return model->edges[model->transitions[trans_id].preset[pre_index]].place;
+}
+
+void dfs(PRESPLUS *model,int i,int count)
+{
+	if(model->places[i].lcut!=0)
+		return;
+	if(model->places[i].cut!=0)
+		return;
+	model->places[i].lcut=++count;
+	int j,k;
+	for(j=0;j<model->places[i].no_of_postset;j++)
+	  for(k=0;k<model->transitions[model->edges[model->places[i].postset[j]].transition].no_of_postset;k++)
+	  	dfs(model,model->edges[model->transitions[model->edges[model->places[i].postset[j]].transition].postset[k]].place,count);
+}
   
 int search_cp(CUTPOINT cp, int p)
 {
-  printf("search_cp() is called is called ................\n");
   int i=0;
    for(i=0;i<cp.num_of_cp;i++){
       if(cp.cplist[i]==p){
-        // printf("search_cp() is ended //////////////////");
          return 1;}
       }
-printf("search_cp() is ended //////////////////");
      return 0;
 }
-CUTPOINT findcutpoints(PRESPLUS *model, CUTPOINT cp) {
+
+
+CUTPOINT findcutpoints(PRESPLUS *model) {
 	/**
 	 * The cutpoint finding routine
 	 * uses the naive algorithm, places with 0 presets/0 postsets/more than 1 presets
 	 * marks type as 0 for in-ports, 1 for out-ports, 2 for intermediate cutpoints
 	 */
-printf("\nfindcutpoints() has begun ...............\n");
-
+	//printf("\nfindcutpoints() has begun ...............\n");
+	CUTPOINT cp;
 	int i=0,j,k, count=0, num=0, flag=0;
 	cp.num_of_cp=0;
 	for(i=0;i<MAXNOPLACES;i++)
 		cp.cplist[i]=0;
-        for(i=0;i<model->no_of_places;i++)
-              model->places[i].cut=0;
+    for(i=0;i<model->no_of_places;i++)
+    {
+        model->places[i].cut=0;
+        model->places[i].lcut=0;
+    }
 	for(i=0;i<model->no_of_places;i++) {
 		if( model->places[i].no_of_preset==0 || model->places[i].no_of_postset==0){
-                         model->places[i].cut=1;
+            model->places[i].cut=1;                           
 			cp.num_of_cp++;
 			cp.cplist[cp.num_of_cp-1]=i;
 			if(model->places[i].no_of_preset==0)
-                              {
-			cp.cptype[cp.num_of_cp-1] = 1;
-                                //model->places[i].label=1;
-                                model->places[i].lcut=1;
-                               
-                              }
-			else {
 				cp.cptype[cp.num_of_cp-1] = 0;
-			       // model->places[i].label=0;
-                                model->places[i].lcut=1;
-                                 
-                              }
+			else
+				cp.cptype[cp.num_of_cp-1] = 1;
 		}
-		if(model->places[i].no_of_preset>1){
-		
-		for(j=0;j<model->places[i].no_of_preset;j++)
-		  {
-		  
-		  for(k=0;k<model->transitions[model->places[i].preset[j]].no_of_preset;k++)
-		    {
-		       if((model->places[i].var_index <=
-		       model->places[model->transitions[model->places[i].preset[j]].preset[k]].var_index)&&      
-		       (!search_cp(cp,i)))
-		           {
-                            model->places[i].cut=1;	             
-                            cp.num_of_cp++;
-			    cp.cplist[cp.num_of_cp-1]=i;
-                            //model->places[i].label=2;
-                            cp.cptype[cp.num_of_cp-1] = 2;	             
-		                       
-		           }
-		    		    
-		    }
-		  
-		  
-		  
-		  }
-	}
-  
-       }
 
-       /*for(i=0;i<model->no_of_transitions;i++){
-           
-          for(j=0;j<model->transitions[i].no_of_postset;j++){
-               
-                flag=0;
-               if(model->places[model->transitions[i].postset[j]].lcut==1){
-                   flag=search_cp(cp,model->transitions[i].postset[j]);
-                if(flag==0){
-                   
-                        model->places[model->transitions[i].postset[j]].cut=1;
-                        cp.num_of_cp++;
-			cp.cplist[cp.num_of_cp-1]=model->places[model->transitions[i].postset[j]].var_index;
-                        model->places[model->places[model->transitions[i].postset[j]].var_index].label=2;
-                       cp.cptype[cp.num_of_cp-1] = 2;
-                      
-                      }
-                  }
-               else 
-                  model->places[model->transitions[i].postset[j]].lcut=1;
-                  
-                }
-              
-        }*/
-        
-        
-	//printf("\nThe cutpoint list is:-\n");
+		else if(model->places[i].no_of_preset>1){
+			dfs(model,i,0);
+			for(j=0;j<model->places[i].no_of_preset;j++)
+			{
+			 	for(k=0;k<model->transitions[model->edges[model->places[i].preset[j]].transition].no_of_preset;k++)
+			    {
+			    	int templace=model->edges[model->transitions[model->edges[model->places[i].preset[j]].transition].preset[k]].place;
+			    	if(model->places[templace].lcut==0)
+			    		continue;
+
+			        if((model->places[i].lcut <=  model->places[templace].lcut) && (!search_cp(cp,i)))
+		            {
+	                    model->places[i].cut=1;	             
+	                    cp.num_of_cp++;
+		    			cp.cplist[cp.num_of_cp-1]=i;
+	                    cp.cptype[cp.num_of_cp-1] = 2;	                    
+		            }
+			    }  
+			}
+			for(int i2=0;i2<model->no_of_places;i2++)
+				model->places[i2].lcut=0;
+		}
+
+    }
+	
+	printf("\nThe cutpoint list is:-\n");
 	for(i=0;i<cp.num_of_cp;i++)
 		printf("%s(type=%d)\t",model->places[cp.cplist[i]].name,cp.cptype[i]);
 	//printf("\n\n");
-//printf("findcutpoints() is ended ////////////////\n");
+	//printf("findcutpoints() is ended ////////////////\n");
 	return cp;
-
 }
 
-/*SEQ_OF_CONCURRENT_TRANS Initialize_trans(SEQ_OF_CONCURRENT_TRANS Tsh)
-{
-  int i;
-  Tsh.T=(SEQ_OF_CONCURRENT_TRANS)calloc(MAXNOTRANS,sizeof(SET_OF_TRANS));
-  for(i=0;i<MAXNOTRANS;i++){
-    Tsh.T[i]=(SET_OF_TRANS)calloc(MAXNOTRANS,sizeof(int));
-    Tsh.last=0;
-   }
-return T;
-}*/
+
+
+
+
+
 SET_TRANS Initialize_trans(SET_TRANS T)
 {
   int i;
@@ -133,20 +137,10 @@ SET_TRANS Initialize_trans(SET_TRANS T)
   for(i=0;i<MAXNOTRANS;i++){
     T.tseq[i].t_seq=(SET_OF_TRANS)calloc(MAXNOTRANS,sizeof(int));
    T.num_seq=0;
-   }
+}
 return T;
 }
-/*void Initial_vald(PRESPLUS *model)
-{
- int i;
- for(i=0;i<model->no_of_transitions;i++)
- {
-   model->transitions[i].vald=0;
-   //model->transitions[i].val=0;
- }
- 
 
-}*/
 void Initial(PRESPLUS *model){
  int i;
  for(i=0;i<model->no_of_transitions;i++)
@@ -163,15 +157,12 @@ void Initial(PRESPLUS *model){
 /* This function is used to mark the transitions*/
 void mark(CONCURRENT_TR_SET Te,PRESPLUS *model)
 {
- //printf("\nmark() is called.............\n");
   int i,j;
-   
   for(i=0;i<Te.size;i++){
         model->transitions[Te.t_seq[i]].mark=1;
-   //printf("\n\n\n<<<<< %s is marked=%d >>>>>\n",model->transitions[Te.t_seq[i]].name,model->transitions[Te.t_seq[i]].mark);
       }
-//printf("mark() is ended //////////\n");
 }
+
 //It is used to find the differece of two sets
 
 MARK_H Difference(MARK_H P,int p)
@@ -308,61 +299,58 @@ CONCURRENT_TR_SET Remove_duplicate(CONCURRENT_TR_SET tseq)
  for(j=0;j<tseq.size;j++)
   {
     if(tseq.t_seq[i]!=tseq.t_seq[j])
-     {
-        i++;
-        tseq.t_seq[i]=tseq.t_seq[j];
-     }  
+ {
+    i++;
+    tseq.t_seq[i]=tseq.t_seq[j];
+ }  
   }
 tseq.size=i+1; 
 return tseq;
 } 
+
 int Check_t(CONCURRENT_TR_SET tseq,int t)
  {
-//printf("\nCheck_t() is called...........\n");
    int i,j;
-   for(j=0;j<tseq.size;j++)
-      {
+  for(j=0;j<tseq.size;j++)
+       {
         if(tseq.t_seq[j]==t){
-       // printf("\n Check_t() is ended ................\n");
-            return 1;}
-     
+            return 1;}     
      }
-//printf("\n Check_t() is ended ................\n");
  return 0;
- }/* wheather the given transition is already exits in the set of transition
+ }
+
+ /* wheather the given transition is already exits in the set of transition
      list or not (eliminate the duplicate)*/
 //This function is used to Construct single path
 SET_TRANS ConstOnePath(MARK_H Pset,SET_TRANS Tsh,PRESPLUS *model,SET_TRANS T)
 {
 
   
- // printf("\nConstOnePath() is called ..................\n");
+
     int i,j,k,count,var=0,size=0;
-    //printf("\nThe size of Tsh is ........%d\n ",Tsh->num_seq);
+
+  
     if(Tsh.num_seq==0)
        return T; 
-  /*  printf("\n ######################## The elements of Pset are ######################## \n");          
-    for(i=0;i<Pset.num_of_marking;i++)
-    printf("%s \t",model->places[Pset.mp[i]].name);
-    printf("\n ############################################################### \n");*/
 
     for(i=0;i<Pset.num_of_marking;i++)
        {
        for(j=0;j<model->places[Pset.mp[i]].no_of_preset;j++)
           {
             //printf("%s it is checking\n",model->transitions[model->places[Pset.mp[i]].preset[j]].name);
-            if(Check_t(Tsh.tseq[Tsh.num_seq-1],model->places[Pset.mp[i]].preset[j]))
+            //printf("prev transition is %d",prev_trans(model,Pset.mp[i],j));
+            if(Check_t(Tsh.tseq[Tsh.num_seq-1],prev_trans(model,Pset.mp[i],j)))
                {
                  
                  //printf("It is here in if \n"); 
                      var=1;
-                T.tseq[T.num_seq].t_seq[size++]=model->places[Pset.mp[i]].preset[j];
+                T.tseq[T.num_seq].t_seq[size++]=prev_trans(model,Pset.mp[i],j);
                } 
            }
         }
-     //printf("It is here %d\n",T.num_seq);
+     //printf("It is here num seq %d\n",T.num_seq);
     if(var==1){
-    // printf("It is here %d\n",var);
+    //printf("It is here var %d\n",var);
      T.tseq[T.num_seq].size=size;
     T.tseq[T.num_seq]=Remove_duplicate(T.tseq[T.num_seq]);
    
@@ -382,18 +370,18 @@ SET_TRANS ConstOnePath(MARK_H Pset,SET_TRANS Tsh,PRESPLUS *model,SET_TRANS T)
                   for(k=0;k<model->transitions[T.tseq[T.num_seq-1].t_seq[j]].no_of_postset;k++)
                     {
 
-                      Pset=Difference(Pset,model->transitions[T.tseq[T.num_seq-1].t_seq[j]].postset[k]);
-                    
+                      //Pset=Difference(Pset,model->transitions[T.tseq[T.num_seq-1].t_seq[j]].postset[k]); C
+                      Pset=Difference(Pset,next_place(model,T.tseq[T.num_seq-1].t_seq[j],k));
                    }
                }
         }
         qsort(Pset.mp,Pset.num_of_marking,sizeof(int),compare);
 
-   /*printf("\n ######################## The elements of Pset are ######################## \n");          
+  /* printf("\n ######################## The elements of Pset 1are ######################## \n");          
    for(i=0;i<Pset.num_of_marking;i++)
    printf("%s \t",model->places[Pset.mp[i]].name);
       printf("\n ############################################################### \n");
-      /* printf("\nT.num_seq for union is %d\n",T.num_seq);
+       printf("\nT.num_seq for union is %d\n",T.num_seq);
   printf("\n  ############## The elements of T.tseq[num_seq-1] in ConstOnePath are ###########################\n");
       for(j=0;j<T.tseq[T.num_seq-1].size;j++){
        printf("%s\t",model->transitions[T.tseq[T.num_seq-1].t_seq[j]].name);
@@ -408,14 +396,20 @@ SET_TRANS ConstOnePath(MARK_H Pset,SET_TRANS Tsh,PRESPLUS *model,SET_TRANS T)
                   { //count=0;
                     for(k=0;k<model->transitions[T.tseq[T.num_seq-1].t_seq[j]].no_of_preset;k++)
  
-                      { // printf("\ncut is %d\n",model.places[model.transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]].cut);
-                      if(model->places[model->transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]].cut!=1)
-                               //count++;
-                       //printf("\n %s is inserted in Pset\n",model.places[model.transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]].name);
-                       Pset=Union(Pset,model->transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]);
+                      { 
+                        //if(model->places[model->transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]].cut!=1) C
+                      	if(model->places[prev_place(model,T.tseq[T.num_seq-1].t_seq[j],k)].cut!=1){
+                       		//Pset=Union(Pset,model->transitions[T.tseq[T.num_seq-1].t_seq[j]].preset[k]); C
+                       		Pset=Union(Pset,prev_place(model,T.tseq[T.num_seq-1].t_seq[j],k));
+                      	}
                       }
                 
               }
+
+             /* printf("\n ######################## The elements of Pset 2are ######################## \n");          
+   for(i=0;i<Pset.num_of_marking;i++)
+   printf("%s \t",model->places[Pset.mp[i]].name);
+      printf("\n ############################################################### \n");*/
   
            
       if(Pset.num_of_marking==0)
@@ -428,75 +422,17 @@ SET_TRANS ConstOnePath(MARK_H Pset,SET_TRANS Tsh,PRESPLUS *model,SET_TRANS T)
 
 int Check_marking(int p, PRESPLUS *model)
 {
- //printf("\nCheck_marking() is called..............\n");
-  int i,j;
-  
-  for(i=0;i<model->places[p].no_of_postset;i++)
-      {
-  //        printf("%s.mark=%d\n",model.transitions[model.places[p].postset[i]].name,model.transitions[model.places[p].postset[i]].mark);
-         if(model->transitions[model->places[p].postset[i]].mark==0){
-//printf("Check_marking() is ended///////////////\n");
-            return 0;     }
-   
-     }
-//printf("Check_marking() is ended///////////////\n");
-  return 1;
-
-
+	int i,j;
+  	for(i=0;i<model->places[p].no_of_postset;i++)
+  	{
+        //if(model->transitions[model->places[p].postset[i]].mark==0) C
+        if(model->transitions[next_trans(model,p,i)].mark==0)
+        {
+            return 0;     
+        } 
+    }
+	return 1;
 }
-/*
-void  unmark(int p,PRESPLUS *model)
-
-{
- //printf("\nunmark() is called.................\n");
-  int i,j,size=0,k=0;
-  
-  
-   MARK_H Mh;
-   
-  //Mh=(int*)malloc(MAXNOPLACES*sizeof(int));
-    Mh.num_of_marking=0;
-    
-    for(i=0;i<model->places[p].no_of_preset;i++){
-    
-         if(model->transitions[model->places[p].preset[i]].mark==0)
-              return;
-           else{
-          model->transitions[model->places[p].preset[i]].mark=0;
-           //printf("%s is unmarked\n",model->transitions[model->places[p].preset[i]].name);
-               
-       for(j=0;j<model->transitions[model->places[p].preset[i]].no_of_preset;j++)
-           {
-              Mh.mp[size++]=model->transitions[model->places[p].preset[i]].preset[j];          
-           
-           }   
-           }
-        }
-        Mh.num_of_marking=size;
-        /*printf("\n{ ");
-    for(i=0;i<size;i++)
-       //printf("%d ",Mh.mp[i]);  
-        printf("}\n");*/
-   /* for(i=0;i<size;i++){
-      
-         if(model->places[Mh.mp[i]].no_of_postset==1)
-             unmark(Mh.mp[i],model);
-             
-             }
-         
-         return;
-             
- }*/
-
-
-  /* if(model->transitions[t].no_of_preset>1)
-        return ;
-   if(model->places[model->transitions[t].preset[0]].no_of_preset==0 || model->places[model->transitions[t].preset[0]].no_of_preset>1)
-       return ;
-  unmark(model->places[model->transitions[t].preset[0]].preset[0],model);
-  */
-
-
 
 
 // It is used to Compute the CrossProduct
@@ -593,22 +529,23 @@ SET_TRANS ComputeAllSetsOfConcurrentTransitions(MARK_H Mh,PRESPLUS *model)
        for(j=0;j<model->places[Mh.mp[i]].no_of_postset;j++)
          {
            m=0;
-          // printf("\nFor %s is\n",model->transitions[model->places[Mh.mp[i]].postset[j]].name);
-           for(k=0;k<model->transitions[model->places[Mh.mp[i]].postset[j]].no_of_preset;k++)
+          
+         //for(k=0;k<model->transitions[model->places[Mh.mp[i]].postset[j]].no_of_preset;k++) C
+           for(k=0;k<model->transitions[next_trans(model,Mh.mp[i],j)].no_of_preset;k++)
+
             {
-                 if(Search_Mh(Mh,model->transitions[model->places[Mh.mp[i]].postset[j]].preset[k]))
+               //if(Search_Mh(Mh,model->transitions[model->places[Mh.mp[i]].postset[j]].preset[k])) C
+                 if(Search_Mh(Mh,prev_place(model,next_trans(model,Mh.mp[i],j),k)))
                      {m++;}
              }
-            // printf("\nm=%d\n",m);
-              if(m==model->transitions[model->places[Mh.mp[i]].postset[j]].no_of_preset){
-                
+
+          //if(m==model->transitions[model->places[Mh.mp[i]].postset[j]].no_of_preset){ C
+            if(m==model->transitions[next_trans(model,Mh.mp[i],j)].no_of_preset){ 
                //printf("\nIN IF\n ");
-               temp.tseq[temp.num_seq].t_seq[size]=model->places[Mh.mp[i]].postset[j];
+               temp.tseq[temp.num_seq].t_seq[size]=next_trans(model,Mh.mp[i],j);
                size=size+1;
                temp.tseq[temp.num_seq].size=size;
                }
-           
-           
            } 
            
            if(temp.tseq[temp.num_seq].size!=0){
@@ -736,15 +673,15 @@ SET_TRANS ComputeAllSetsOfConcurrentTransitions(MARK_H Mh,PRESPLUS *model)
 SET_OF_PATHS ConstructPaths(SET_TRANS Tsh,MARK_H Mh,CONCURRENT_TR_SET Te,PRESPLUS *model,SET_OF_PATHS Q,CUTPOINT cp )
 {
            //printf("\nConstructPaths() is called ..................\n");
-         int i,j,k,l,temp=0;
-         MARK_H Mnew,Cset,Mh1;
-    	 Mnew.num_of_marking=0;
-    	 Mh1.num_of_marking=0;
-    	 SET_TRANS path,T,Te1;
-    	 path.num_seq=0;
-    	 path=Initialize_trans(path);
-   	 T=Initialize_trans(T);
-    	 Te1=Initialize_trans(Te1);
+	int i,j,k,l,temp=0;
+	MARK_H Mnew,Cset,Mh1;
+	Mnew.num_of_marking=0;
+	Mh1.num_of_marking=0;
+	SET_TRANS path,T,Te1;
+	path.num_seq=0;
+	path=Initialize_trans(path);
+	T=Initialize_trans(T);
+	Te1=Initialize_trans(Te1);
        /*printf("\n ########### The elements of TSh are #####################\n");
            for(i=0;i<Tsh.num_seq;i++){
   
@@ -790,10 +727,10 @@ SET_OF_PATHS ConstructPaths(SET_TRANS Tsh,MARK_H Mh,CONCURRENT_TR_SET Te,PRESPLU
           for(j=0;j<model->transitions[Te.t_seq[i]].no_of_postset;j++)
             {
                 //printf("%d",model->places[model->transitions[Te.t_seq[i]].postset[j]].label);
-                 if(!Search_Mh(Mnew,model->transitions[Te.t_seq[i]].postset[j])&& model->places[model->transitions[Te.t_seq[i]].postset[j]].label!=1){
-                  
+                 //if(!Search_Mh(Mnew,model->transitions[Te.t_seq[i]].postset[j])&& model->places[model->transitions[Te.t_seq[i]].postset[j]].label!=1){ C
+                 if(!Search_Mh(Mnew,next_place(model,Te.t_seq[i],j))&& model->places[next_place(model,Te.t_seq[i],j)].label!=1){ 
                  //if(){//&&model->places[model->transitions[Te.t_seq[i]].postset[j]].no_of_postset==0){
-                    Mnew.mp[Mnew.num_of_marking++]=model->transitions[Te.t_seq[i]].postset[j];
+                    Mnew.mp[Mnew.num_of_marking++]=next_place(model,Te.t_seq[i],j);  //HAVE COMMENTED OUT SOMETHING
                     model->places[Mnew.mp[Mnew.num_of_marking-1]].copy=0;
                      }
             }
@@ -838,12 +775,13 @@ SET_OF_PATHS ConstructPaths(SET_TRANS Tsh,MARK_H Mh,CONCURRENT_TR_SET Te,PRESPLU
                  {
                    for(l=0;l<model->transitions[path.tseq[0].t_seq[k]].no_of_postset;l++)
                      {
-                      if((model->transitions[path.tseq[0].t_seq[k]].postset[l]!=Mnew.mp[i])&& Search_Mh(Mnew,model->transitions[path.tseq[0].t_seq[k]].postset[l])){
+                      //if((model->transitions[path.tseq[0].t_seq[k]].postset[l]!=Mnew.mp[i])&& Search_Mh(Mnew,model->transitions[path.tseq[0].t_seq[k]].postset[l])){ C
+                      	if((next_place(model,path.tseq[0].t_seq[k],l)!=Mnew.mp[i])&& Search_Mh(Mnew,next_place(model,path.tseq[0].t_seq[k],l))){
                            //printf("%s",model->places[model->transitions[path.tseq[0].t_seq[k]].postset[l]].name);
                             //      printf("\nI in creament%d\n",i);
                                     //i++;
-                                    model->places[model->transitions[path.tseq[0].t_seq[k]].postset[l]].copy=1;
-                                    
+                                    //model->places[model->transitions[path.tseq[0].t_seq[k]].postset[l]].copy=1;
+                                    model->places[next_place(model,path.tseq[0].t_seq[k],l)].copy=1;
                                     //printf("%d",model->places[model->transitions[path.tseq[0].t_seq[k]].postset[l]].copy);
                            }
                      
@@ -912,7 +850,8 @@ SET_OF_PATHS ConstructPaths(SET_TRANS Tsh,MARK_H Mh,CONCURRENT_TR_SET Te,PRESPLU
 
        for(i=0;i<Te.size;i++){
           for(j=0;j<model->transitions[Te.t_seq[i]].no_of_preset;j++)
-            Mh=Difference(Mh,model->transitions[Te.t_seq[i]].preset[j]);
+            //Mh=Difference(Mh,model->transitions[Te.t_seq[i]].preset[j]); C
+            Mh=Difference(Mh,prev_place(model,Te.t_seq[i],j));
             qsort(Mh.mp,Mh.num_of_marking,sizeof(int),compare);
          }
        /* printf("\n ######################## The elements of MH After Mh-Te PRESET ######################## \n");          
@@ -1009,8 +948,9 @@ SET_OF_PATHS ConstructAllPaths(PRESPLUS *model)
 {
   //printf("\n/////////////// IN FUNCTION ConstructAllPaths()//////////////////////////////\n");
   int i;
-  Initial(model);
-  CUTPOINT cp = findcutpoints(model, cp);
+  Initial(model);  //THISS ISSS CHANGINNGG THE MODDELLL!!!! CHECK IF REQUIRED!!!!
+  CUTPOINT cp = findcutpoints(model);
+
   MARK_H Mh;
   SET_TRANS Tsh,T;
   Tsh=Initialize_trans(Tsh);
@@ -1037,10 +977,10 @@ SET_OF_PATHS ConstructAllPaths(PRESPLUS *model)
   printf("\n ################################ \n");*/
 // for(i=0;i<Mh.num_of_marking;i++)
    //printf("%d\t",Mh.mp[i]);
-   T=ComputeAllSetsOfConcurrentTransitions(Mh,model);
+  												T=ComputeAllSetsOfConcurrentTransitions(Mh,model);
    //printf("T->num_seq=%d\n",T.num_seq);
- for(i=0;i<T.num_seq;i++)
-      Q=ConstructPaths(Tsh,Mh,T.tseq[i],model,Q,cp);
+												 for(i=0;i<T.num_seq;i++)
+   												   Q=ConstructPaths(Tsh,Mh,T.tseq[i],model,Q,cp);
 //free(model);
 
  //printf("\n \n No. of places : %d \n \n ", model->no_of_places);

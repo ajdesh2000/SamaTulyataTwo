@@ -1,0 +1,52 @@
+
+ Number of Places = 2
+ Places ... 
+
+ Place : p0 
+ Associated variable : a
+ Associated token value:1
+
+
+ Place : p1 
+ Associated variable : a
+ Associated token value:0
+
+
+ Number of Transitions = 1
+ Transitions ... 
+
+ Transition : t0
+ Guard conditions:1=1
+ Z3 Guard conditions:###(= 1 1)###
+ Number of preset edges : 1
+ Preset edge list : e0 
+ Number of postset edges : 1
+ Postset edge list : e1 
+
+
+ Number of Edges : 2
+ Edges ... : 
+
+ Edge : e0 
+ Type : 0
+ Connects Place p0 to Transition t0
+
+ Edge : e1 
+ Type : 1
+ Connects Transition t0 to Place p1
+ Transition function :a=a+1
+ Z3 Transition function :###a  :=  (+ a 1)###
+
+
+ Printing initial marking ... 
+ Total number of initially marked places : 1
+ Initially marked places are : p0 
+
+
+ Preset & postset edge list for places: 
+ Preset list for place p0:	
+ Postset list for place p0:	e0 
+ Preset list for place p1:	e1 
+ Postset list for place p1:	
+
+

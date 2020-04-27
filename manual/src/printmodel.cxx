@@ -72,76 +72,6 @@ void DecompilingExpr(EXPR expr)
   return ;
 } 
 
-void write_lists( NC *root ){
-
-  char *sym_value;
-  sym_value = (char * ) malloc( 1000*sizeof( char ) );
-  
-  if( root != NULL ){
-    if( root->type == 'R' || root->type == 'O' ){
-      if( root->type == 'R' )
-	printf( " ( ");
-      write_lists( root->link );
-    }
-    
-    switch( root->type )
-      {
-      case 'f':
-	symbol_for_index( root->inc, sym_value );
-	printf( "* %s( ",sym_value );
-	break;	
-      case 'v': 
-	symbol_for_index( root->inc, sym_value );
-        printf( "* %s ",sym_value );
-	break;
-      case 'T':
-	printf( "%c %d ",( root->inc >= 0 )?'+':'-', 
-		abs( root->inc ) );
-	break;
-      case 'S':
-	printf( " %d ",root->inc );
-	break;
-      case 'R':
-	switch( root->inc )
-	  {
-	  case 0: printf( ">= 0");
-	    break;
-	  case 1: printf( "> 0" );
-	    break;
-	  case 2: printf( "<= 0" );
-	    break;
-	  case 3: printf( "< 0" );
-	    break;
-	  case 4: printf( "== 0");
-	    break;
-	  case 5: printf( "!= 0" );
-	    break;
-	  }; // switch( root->inc )
-	printf( " ) " );
-	if( root->list != NULL )
-	  printf( " OR " );
-	break;
-      case 'A':  
-	break;
-      case 'O':
-	if( root->list != NULL )
-	  printf( " AND ");
-	break;
-      case 'D':
-	printf( " / ");
-	break;
-      default: printf( "%c %d\t",  root->type, root->inc );
-      };
-    if( root->type != 'R' && root->type != 'O' )	
-      write_lists( root->link );
-    if( root->type == 'f' )
-      printf( " )" );
-    if( root->type == 'S' && root->list != NULL )
-      printf( ", " );
-    write_lists( root->list );
-  }
-  return;
-}	 
 
 
 int printpresplus(PRESPLUS model)
@@ -152,7 +82,7 @@ int printpresplus(PRESPLUS model)
   int i,j,k;
 
   printf("\n Number of Places = %d", model.no_of_places);  
-  printf("\n Printing Places ... \n");  
+  printf("\n Places ... \n");  
   for(i=0;i< model.no_of_places;i++) 
   {
     printf("\n Place : %s ",model.places[i].name);
@@ -162,21 +92,22 @@ int printpresplus(PRESPLUS model)
   }
 
   printf("\n Number of Transitions = %d", model.no_of_transitions);
-  printf("\n Printing Transitions ... \n");
+  printf("\n Transitions ... \n");
   for(i=0;i<model.no_of_transitions;i++)
   {
     printf("\n Transition : %s",model.transitions[i].name);
     printf("\n Guard conditions:");
     DecompilingExpr(model.transitions[i].guard);
-    printf("\n Z3 Guard conditions:");
-    printf("%s\n", Z3_ast_to_string(model.ctx,model.transitions[i].condition));
-    //write_lists(model.transitions[i].condition);
-    printf("\n Printing preset edge list : ") ;
+    printf("\n Z3 Guard conditions:###");
+    printf("%s", Z3_ast_to_string(model.ctx,model.transitions[i].condition));
+    printf("###\n Number of preset edges : %d",model.transitions[i].no_of_preset) ;
+    printf("\n Preset edge list : ") ;
     for (j=0; j < model.transitions[i].no_of_preset; j++)
     {
          printf("%s ", model.edges[model.transitions[i].preset[j]].name);
     }
-    printf("\n Printing postset edge list : ") ;
+    printf("\n Number of postset edges : %d",model.transitions[i].no_of_postset) ;
+    printf("\n Postset edge list : ") ;
     for (j=0 ; j< model.transitions[i].no_of_postset;j++)
     {
          printf("%s ", model.edges[model.transitions[i].postset[j]].name);
@@ -185,26 +116,27 @@ int printpresplus(PRESPLUS model)
   } 
   
   printf("\n Number of Edges : %d",model.no_of_edges) ;
-  printf("\n Printing Edges ... : ") ;
+  printf("\n Edges ... : ") ;
   for(i=0;i<model.no_of_edges;i++)    
   {
     printf("\n\n Edge : %s ",model.edges[i].name);
+    printf("\n Type : %d",model.edges[i].from_transition);
     if(model.edges[i].from_transition==1)
     {
       printf("\n Connects Transition %s to Place %s",model.transitions[model.edges[i].transition].name,model.places[model.edges[i].place].name);
       printf("\n Transition function :");
       DecompilingExpr(model.edges[i].expr);
-      printf("\n Z3 Transition function :");
+      printf("\n Z3 Transition function :###");
       k=0;
       while(model.edges[i].action[k].rhs!=NULL)
       {
          	symbol_for_index( model.edges[i].action[k].lhs, sym_value );
 
-		printf("\n%s  :=  ", model.var_table[model.edges[i].action[k].lhs].name/*sym_value*/ );
-    printf("%s\n", Z3_ast_to_string(model.ctx,model.edges[i].action[k].rhs));		
-		//write_lists(model.edges[i].action[k].rhs);
+		printf("%s  :=  ", model.var_table[model.edges[i].action[k].lhs].name/*sym_value*/ );
+    printf("%s", Z3_ast_to_string(model.ctx,model.edges[i].action[k].rhs));		
 		k++;
       }
+      printf("###");
 
     }
     else{
@@ -223,7 +155,7 @@ int printpresplus(PRESPLUS model)
   printf("\n\n") ;
 /*************************************/
 
-	printf("\n Printing preset & postset edge list for places: \n") ;
+	printf("\n Preset & postset edge list for places: \n") ;
 	for(i=0;i<model.no_of_places;i++)
 	{
 		printf(" Preset list for place %s:\t",model.places[i].name);

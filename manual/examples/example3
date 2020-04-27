@@ -1,0 +1,123 @@
+
+ Number of Places = 4
+ Places ... 
+
+ Place : p0 
+ Associated variable : a
+ Associated token value:1
+
+
+ Place : p1 
+ Associated variable : a
+ Associated token value:0
+
+
+ Place : p2 
+ Associated variable : a
+ Associated token value:0
+
+
+ Place : p3 
+ Associated variable : a
+ Associated token value:0
+
+
+ Number of Transitions = 4
+ Transitions ... 
+
+ Transition : t0
+ Guard conditions:1=1
+ Z3 Guard conditions:###(= 1 1)###
+ Number of preset edges : 1
+ Preset edge list : e0 
+ Number of postset edges : 1
+ Postset edge list : e1 
+
+
+ Transition : t1
+ Guard conditions:1=1
+ Z3 Guard conditions:###(= 1 1)###
+ Number of preset edges : 1
+ Preset edge list : e2 
+ Number of postset edges : 1
+ Postset edge list : e3 
+
+
+ Transition : t2
+ Guard conditions:1=1
+ Z3 Guard conditions:###(= 1 1)###
+ Number of preset edges : 1
+ Preset edge list : e4 
+ Number of postset edges : 1
+ Postset edge list : e5 
+
+
+ Transition : t3
+ Guard conditions:1=1
+ Z3 Guard conditions:###(= 1 1)###
+ Number of preset edges : 1
+ Preset edge list : e6 
+ Number of postset edges : 1
+ Postset edge list : e7 
+
+
+ Number of Edges : 8
+ Edges ... : 
+
+ Edge : e0 
+ Type : 0
+ Connects Place p0 to Transition t0
+
+ Edge : e1 
+ Type : 1
+ Connects Transition t0 to Place p1
+ Transition function :a=a+1
+ Z3 Transition function :###a  :=  (+ a 1)###
+
+ Edge : e2 
+ Type : 0
+ Connects Place p1 to Transition t1
+
+ Edge : e3 
+ Type : 1
+ Connects Transition t1 to Place p2
+ Transition function :a=a+1
+ Z3 Transition function :###a  :=  (+ a 1)###
+
+ Edge : e4 
+ Type : 0
+ Connects Place p2 to Transition t2
+
+ Edge : e5 
+ Type : 1
+ Connects Transition t2 to Place p1
+ Transition function :a=a+1
+ Z3 Transition function :###a  :=  (+ a 1)###
+
+ Edge : e6 
+ Type : 0
+ Connects Place p1 to Transition t3
+
+ Edge : e7 
+ Type : 1
+ Connects Transition t3 to Place p3
+ Transition function :a=a+1
+ Z3 Transition function :###a  :=  (+ a 1)###
+
+
+ Printing initial marking ... 
+ Total number of initially marked places : 1
+ Initially marked places are : p0 
+
+
+ Preset & postset edge list for places: 
+ Preset list for place p0:	
+ Postset list for place p0:	e0 
+ Preset list for place p1:	e1 e5 
+ Postset list for place p1:	e2 e6 
+ Preset list for place p2:	e3 
+ Postset list for place p2:	e4 
+ Preset list for place p3:	e7 
+ Postset list for place p3:	
+
+
