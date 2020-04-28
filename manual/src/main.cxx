@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
 
        case 6: {
         paths1=ConstructAllPaths(&model1);
+        print_paths(paths1);
         // if(m==1){
         //     paths2=ConstructAllPaths(&model2);
         //  }

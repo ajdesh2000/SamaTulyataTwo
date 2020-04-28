@@ -997,4 +997,13 @@ return Q;
 //printf("\n//////////////////////// END OF findpaths()////////////////////////////////////\n");
 }
 
-
+void print_paths(SET_OF_PATHS pathset){
+	printf("\nPrinting Paths. Number of paths is: %d.\n",pathset.num_of_path);
+	for(int i=0;i<pathset.num_of_path;i++){
+		printf("\nPath #%d:\n",i+1);
+		for(int j=pathset.path[i].size-1;j>=0;j--){
+			printf("t%d ", pathset.path[i].segments[j]);
+		}
+		printf("\n");
+	}
+}

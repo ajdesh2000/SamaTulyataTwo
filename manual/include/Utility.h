@@ -38,6 +38,7 @@ extern EXPR ParseExpression(char*) ;
 
 extern CUTPOINT findcutpoints(PRESPLUS model, CUTPOINT cp);
 extern PATHSET ConstructAllPaths(PRESPLUS *model);
+extern void print_paths(PATHSET pathset);
 extern void visualize(PRESPLUS model);
 
 extern Z3_context mk_context();
